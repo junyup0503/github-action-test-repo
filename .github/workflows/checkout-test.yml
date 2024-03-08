@@ -21,7 +21,7 @@ jobs:
 
       - name: Get Head Commit Message
         id: get_head_commit_message
-        run: echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> "$GITHUB_OUTPUT"
+        run: echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%B)" >> "$GITHUB_OUTPUT"
 
       - name: Get Head Previous Commit
         id: get_head_previous_commit
