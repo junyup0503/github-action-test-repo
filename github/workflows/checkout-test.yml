@@ -1,0 +1,39 @@
+name: Check Last Commit
+
+on:
+  pull_request:
+    branches-ignore:
+      - master
+      - release
+      - qa
+      - dev
+
+jobs:
+  check-last-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.GITHUB_SHA }}
+          fetch-depth: 2
+
+      - name: Get Head Commit Message
+        id: get_head_commit_message
+        run: echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> "$GITHUB_OUTPUT"
+
+      - name: Read last commit from file
+        id: read-commit
+        run: |
+          echo "::set-output name=last_commit::$(jq -r '.lastCommit' test_process/test_result.json)" 
+          echo "::set-output name=comment::$(jq -r '.comment' test_process/test_result.json)"
+      - name: Compare commits
+        run: |
+          if [ "${{ steps.get_head_commit_message.outputs.HEAD_COMMIT_MESSAGE }}" == "${{ steps.read-commit.outputs.last_commit }}${{ steps.read-commit.outputs.comment }}" ]; then
+            echo "Last commit in the file matches the last commit in the PR branch."
+            exit 0
+          else
+            echo "Last commit in the file does not match the last commit in the PR branch."
+            exit 1
+          fi
