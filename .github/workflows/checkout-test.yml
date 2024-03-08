@@ -23,7 +23,7 @@ jobs:
         id: get_head_commit_message
         run: echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> "$GITHUB_OUTPUT"
 
-        - name: Get Head Previous Commit
+      - name: Get Head Previous Commit
         id: get_head_previous_commit
         run: echo "PREVIOUS_COMMIT=$(git rev-parse HEAD~1)" >> "$GITHUB_OUTPUT"
 
